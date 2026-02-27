@@ -55,14 +55,6 @@ if (loginForm) {
         }
     });
 }
-
-// PROTECT DASHBOARD
-if (window.location.pathname.includes("dashboard.html")) {
-    if (localStorage.getItem("loggedIn") !== "true") {
-        window.location.href = "login.html";
-    }
-}
-
 // LOGOUT
 function logout() {
     localStorage.removeItem("loggedIn");
