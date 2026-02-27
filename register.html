@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Bitcoin Loan - Register</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header class="navbar">
+        <div class="logo">₿ Bitcoin Loan</div>
+        <div></div>
+    </header>
+
+    <main class="dashboard-container">
+
+        <section class="card" style="max-width:500px; margin:auto;">
+            <h2>Create Account</h2>
+
+            <form id="registerForm">
+
+                <!-- Personal Info -->
+                <label>Full Name</label>
+                <input type="text" id="fullName" placeholder="John Doe" required>
+
+                <label>Email Address</label>
+                <input type="email" id="regEmail" placeholder="email@example.com" required>
+
+                <label>Country</label>
+                <select id="country" required>
+                    <option value="">Select Country</option>
+                    <option>United States</option>
+                    <option>United Kingdom</option>
+                    <option>Canada</option>
+                    <option>Germany</option>
+                    <option>France</option>
+                    <option>Nigeria</option>
+                    <option>South Africa</option>
+                    <option>India</option>
+                    <option>China</option>
+                    <option>Japan</option>
+                    <option>Brazil</option>
+                    <option>Australia</option>
+                    <option>Spain</option>
+                    <option>Italy</option>
+                    <option>Netherlands</option>
+                    <option>Switzerland</option>
+                    <option>Sweden</option>
+                    <option>Norway</option>
+                    <option>UAE</option>
+                    <option>Saudi Arabia</option>
+                </select>
+
+                <!-- Security -->
+                <label>Password</label>
+                <input type="password" id="regPassword" placeholder="********" required>
+
+                <label>Confirm Password</label>
+                <input type="password" id="confirmPassword" placeholder="********" required>
+
+                <!-- Bitcoin Wallet -->
+                <label>Bitcoin Wallet Address</label>
+                <input type="text" id="btcWallet" placeholder="1BitcoinWalletAddress123" required>
+
+                <button type="submit">Create Account</button>
+
+            </form>
+
+            <p style="text-align:center; margin-top:10px;">
+                Already have an account? <a href="index.html" style="color:#f7931a;">Login</a>
+            </p>
+        </section>
+
+    </main>
+
+<script src="script.js"></script>
+</body>
+</html>
