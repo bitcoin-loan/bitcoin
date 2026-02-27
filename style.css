@@ -34,11 +34,6 @@ body {
     cursor: pointer;
 }
 
-.navbar button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 15px rgba(0,0,0,0.5);
-}
-
 /* ========================
    DASHBOARD CONTAINER
 ======================== */
@@ -177,22 +172,35 @@ button:hover {
 /* ========================
    RESPONSIVE DESIGN
 ======================== */
-@media (max-width: 1024px) {
-    .dashboard-container {
-        flex-direction: column;
-    }
-    .card {
-        width: 100%;
-    }
-}
+@media (max-width: 768px) {
 
-@media (max-width: 600px) {
-    .navbar {
-        flex-direction: column;
-        gap: 10px;
-        text-align: center;
+    .landing-container {
+        padding: 30px 15px;
     }
-    input, button {
+
+    .landing-header h1 {
+        font-size: 28px;
+        line-height: 1.2;
+    }
+
+    .landing-header p {
         font-size: 16px;
     }
-}
+
+    .get-started-btn {
+        width: 100%;
+        font-size: 16px;
+    }
+
+    .how-it-works {
+        padding: 0 5px;
+    }
+
+    .guide-step h4 {
+        font-size: 16px;
+    }
+
+    .guide-step p {
+        font-size: 14px;
+    }
+       }
