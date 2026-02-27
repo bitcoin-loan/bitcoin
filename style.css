@@ -16,30 +16,22 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 15px 30px;
-    background: #1e293b;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.4);
+    padding: 15px 20px;
     flex-wrap: wrap;
 }
 
 .logo {
-    font-size: 24px;
-    font-weight: bold;
-    background: linear-gradient(90deg, #f7931a, #ffb347);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    font-size: 20px;
 }
 
-.navbar button {
-    padding: 10px 20px;
-    background: linear-gradient(90deg, #f7931a, #ffb347);
+.nav-btn {
+    padding: 8px 15px;
+    margin-left: 10px;
+    border-radius: 6px;
     border: none;
+    background: #f7931a;
+    color: white;
     cursor: pointer;
-    color: #fff;
-    border-radius: 8px;
-    font-weight: bold;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
 }
 
 .navbar button:hover {
