@@ -29,24 +29,29 @@ if (registerForm) {
         window.location.href = "login.html";
     });
 }
-
-// LOGIN
+// LOGIN FUNCTION
 const loginForm = document.getElementById("loginForm");
 
 if (loginForm) {
     loginForm.addEventListener("submit", function (e) {
         e.preventDefault();
 
-        const email = document.getElementById("loginEmail").value;
-        const password = document.getElementById("loginPassword").value;
+        const email = document.getElementById("loginEmail").value.trim();
+        const password = document.getElementById("loginPassword").value.trim();
 
         const savedUser = JSON.parse(localStorage.getItem("user"));
 
-        if (savedUser && savedUser.email === email && savedUser.password === password) {
+        if (!savedUser) {
+            alert("No user found. Please register first.");
+            return;
+        }
+
+        if (savedUser.email === email && savedUser.password === password) {
             localStorage.setItem("loggedIn", "true");
+            alert("Login successful!");
             window.location.href = "dashboard.html";
         } else {
-            alert("Invalid email or password");
+            alert("Invalid email or password.");
         }
     });
 }
