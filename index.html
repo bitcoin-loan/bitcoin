@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Bitcoin Loan Platform</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* ---------- LANDING PAGE ---------- */
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #0f172a;
+            color: #ffffff;
+        }
+
+        .landing-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 50px 20px;
+            gap: 40px;
+        }
+
+        .landing-header {
+            text-align: center;
+        }
+
+        .landing-header h1 {
+            font-size: 48px;
+            background: linear-gradient(90deg, #f7931a, #ffb347);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 0;
+        }
+
+        .landing-header p {
+            color: #e2e8f0;
+            font-size: 18px;
+            margin-top: 10px;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 20px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .get-started-btn, .login-btn {
+            padding: 15px 40px;
+            background: linear-gradient(90deg, #f7931a, #ffb347);
+            border: none;
+            color: #fff;
+            font-size: 18px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+        }
+
+        .get-started-btn:hover, .login-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.6);
+        }
+
+        /* ---------- HOW IT WORKS ---------- */
+        .how-it-works {
+            max-width: 900px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .guide-step {
+            margin-bottom: 10px;
+            padding: 15px 20px;
+            background: #1e293b;
+            border-left: 5px solid #f7931a;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .guide-step:hover {
+            background: #0f172a;
+        }
+
+        .guide-step h4 {
+            margin: 0;
+            color: #ffb347;
+            font-size: 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .guide-step p {
+            margin-top: 10px;
+            font-size: 15px;
+            color: #e2e8f0;
+            display: none; /* hidden by default */
+        }
+
+        @media (max-width: 768px) {
+            .landing-header h1 {
+                font-size: 36px;
+            }
+            .get-started-btn, .login-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <header class="navbar" style="display:flex; justify-content:space-between; padding:15px 30px; background:#1e293b;">
+        <div class="logo" style="font-weight:bold; font-size:20px;">₿ Bitcoin Loan</div>
+        <div class="btn-group">
+            <button class="get-started-btn" id="openModalBtn">Register</button>
+            <button class="login-btn" onclick="window.location.href='login.html'">Login</button>
+        </div>
+    </header>
+
+    <!-- Landing Page Content -->
+    <main class="landing-container">
+
+        <!-- Hero Section -->
+        <div class="landing-header">
+            <h1>Borrow Bitcoin with Ease</h1>
+            <p>Use your collateral to get instant BTC loans. Secure, fast, and transparent.</p>
+        </div>
+
+        <!-- How It Works Section -->
+        <section class="how-it-works">
+            <h2 style="color:#f7931a; text-align:center;">How It Works</h2>
+
+            <div class="guide-step">
+                <h4>1️⃣ Register & Verify Email <span>➕</span></h4>
+                <p>Create an account, provide your Bitcoin wallet, and verify your email with a 6-digit code.</p>
+            </div>
+
+            <div class="guide-step">
+                <h4>2️⃣ Login to Dashboard <span>➕</span></h4>
+                <p>Access your personalized dashboard to track BTC price, loans, and collateral.</p>
+            </div>
+
+            <div class="guide-step">
+                <h4>3️⃣ Calculate Your Loan <span>➕</span></h4>
+                <p>Enter the BTC amount you want to borrow. See the required 5% collateral and USD value instantly.</p>
+            </div>
+
+            <div class="guide-step">
+                <h4>4️⃣ Deposit Collateral & Request Loan <span>➕</span></h4>
+                <p>Send collateral to the platform wallet. Once received, your loan is automatically approved.</p>
+            </div>
+
+            <div class="guide-step">
+                <h4>5️⃣ Loan Disbursed to Your Wallet <span>➕</span></h4>
+                <p>Approved BTC loan is sent directly to your Bitcoin wallet. Track all requests in Loan History.</p>
+            </div>
+
+            <div class="guide-step">
+                <h4>6️⃣ Manage Profile & Track Loans <span>➕</span></h4>
+                <p>View your verified badge, wallet, and full loan history in your profile anytime.</p>
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- Registration Modal -->
+    <div id="registerModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" id="closeModal">&times;</span>
+            <h2>Create Account</h2>
+
+            <form id="registerForm">
+
+                <input type="text" id="fullName" placeholder="Full Name" required>
+                <input type="email" id="regEmail" placeholder="Email Address" required>
+
+                <select id="country" required>
+                    <option value="">Select Country</option>
+                    <option>United States</option>
+                    <option>United Kingdom</option>
+                    <option>Canada</option>
+                    <option>Nigeria</option>
+                    <option>Germany</option>
+                    <option>India</option>
+                    <option>Australia</option>
+                    <option>Japan</option>
+                </select>
+
+                <input type="password" id="regPassword" placeholder="Password" required>
+                <input type="password" id="confirmPassword" placeholder="Confirm Password" required>
+                <input type="text" id="btcWallet" placeholder="Bitcoin Wallet Address" required>
+
+                <button type="submit">Register</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Collapsible How It Works
+        document.querySelectorAll('.guide-step').forEach(step => {
+            step.addEventListener('click', () => {
+                const p = step.querySelector('p');
+                const icon = step.querySelector('span');
+                if (p.style.display === 'block') {
+                    p.style.display = 'none';
+                    icon.textContent = '➕';
+                } else {
+                    p.style.display = 'block';
+                    icon.textContent = '➖';
+                }
+            });
+        });
+
+        // Modal Logic
+        const modal = document.getElementById('registerModal');
+        const openBtn = document.getElementById('openModalBtn');
+        const closeBtn = document.getElementById('closeModal');
+
+        openBtn.onclick = () => modal.style.display = 'block';
+        closeBtn.onclick = () => modal.style.display = 'none';
+        window.onclick = (e) => { if(e.target === modal) modal.style.display = 'none'; }
+
+        // Connect this form to your existing script.js registration logic
+    </script>
+
+</body>
+</html>
