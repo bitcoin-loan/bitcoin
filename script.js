@@ -57,48 +57,58 @@ function protectPages() {
 /* =========================================
    REGISTRATION
 ========================================= */
+const registerForm = document.getElementById("registerForm");
 
-function initRegister() {
-    const form = document.getElementById("registerForm");
-    if (!form) return;
 
-    form.addEventListener("submit", (e) => {
-        e.preventDefault();
+if (registerForm) {
 
-        const fullName = document.getElementById("fullName").value.trim();
-        const email = document.getElementById("regEmail").value.trim();
-        const country = document.getElementById("country").value;
-        const password = document.getElementById("regPassword").value;
-        const confirmPassword = document.getElementById("confirmPassword").value;
-        const btcWallet = document.getElementById("btcWallet").value.trim();
+    registerForm.addEventListener("submit", function (e) {
 
-        if (!fullName || !email || !country || !password || !btcWallet) {
-            return alert("All fields are required.");
-        }
+        e.preventDefault();
 
-        if (password !== confirmPassword) {
-            return alert("Passwords do not match.");
-        }
 
-        if (getUserByEmail(email)) {
-            return alert("Email already registered.");
-        }
+        const fullName = document.getElementById("fullName").value;
 
-        const users = getUsers();
-        users.push({
-            fullName,
-            email,
-            country,
-            password,
-            btcWallet,
-            verified: true
-        });
+        const email = document.getElementById("regEmail").value;
 
-        saveUsers(users);
+        const password = document.getElementById("regPassword").value;
 
-        alert("Registration successful!");
-        window.location.href = "login.html";
-    });
+        const confirmPassword = document.getElementById("confirmPassword").value;
+
+        const wallet = document.getElementById("btcWallet").value;
+
+
+        if (password !== confirmPassword) {
+
+            alert("Passwords do not match!");
+
+            return;
+
+        }
+
+
+        const user = {
+
+            fullName,
+
+            email,
+
+            password,
+
+            wallet
+
+        };
+
+
+        localStorage.setItem("user", JSON.stringify(user));
+
+
+        alert("Registration successful!");
+
+        window.location.href = "login.html";
+
+    });
+
 }
 
 /* =========================================
