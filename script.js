@@ -184,12 +184,9 @@ function initProfile() {
     setText("profileWallet", user.btcWallet);
 }
 
-/* =========================================
-   LOGOUT
-========================================= */
-
+// LOGOUT
 function logout() {
-    localStorage.removeItem("bitcoinSession");
+    localStorage.removeItem("loggedIn");
     window.location.href = "login.html";
 }
 
