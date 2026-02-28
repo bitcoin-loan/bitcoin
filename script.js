@@ -114,27 +114,31 @@ if (registerForm) {
 /* =========================================
    LOGIN
 ========================================= */
+const loginForm = document.getElementById("loginForm");
 
-function initLogin() {
-    const form = document.getElementById("loginForm");
-    if (!form) return;
-
-    form.addEventListener("submit", (e) => {
+if (loginForm) {
+    loginForm.addEventListener("submit", function (e) {
         e.preventDefault();
 
-        const email = document.getElementById("email").value.trim();
-        const password = document.getElementById("password").value;
+        const email = document.getElementById("loginEmail").value.trim();
+        const password = document.getElementById("loginPassword").value.trim();
 
-        const user = getUserByEmail(email);
+        const savedUser = JSON.parse(localStorage.getItem("user"));
 
-        if (!user) return alert("No account found.");
-        if (user.password !== password) return alert("Invalid credentials.");
+        if (!savedUser) {
+            alert("No user found. Please register first.");
+            return;
+        }
 
-        localStorage.setItem("bitcoinSession", email);
-        window.location.href = "dashboard.html";
+        if (savedUser.email === email && savedUser.password === password) {
+            localStorage.setItem("loggedIn", "true");
+            alert("Login successful!");
+            window.location.href = "dashboard.html";
+        } else {
+            alert("Invalid email or password.");
+        }
     });
 }
-
 /* =========================================
    DASHBOARD
 ========================================= */
