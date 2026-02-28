@@ -53,89 +53,62 @@ function protectPages() {
         window.location.href = "dashboard.html";
     }
 }
+// ===============================
+// PRODUCTION STABLE AUTH SYSTEM
+// ===============================
 
-/* =========================================
-   REGISTRATION
-========================================= */
+// REGISTER
 const registerForm = document.getElementById("registerForm");
 
-
 if (registerForm) {
+    registerForm.addEventListener("submit", function (e) {
+        e.preventDefault();
 
-    registerForm.addEventListener("submit", function (e) {
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
 
-        e.preventDefault();
+        if (!email || !password) {
+            alert("Please fill all fields");
+            return;
+        }
 
+        const user = {
+            email: email,
+            password: password
+        };
 
-        const fullName = document.getElementById("fullName").value;
+        localStorage.setItem("bitcoinUser", JSON.stringify(user));
 
-        const email = document.getElementById("regEmail").value;
-
-        const password = document.getElementById("regPassword").value;
-
-        const confirmPassword = document.getElementById("confirmPassword").value;
-
-        const wallet = document.getElementById("btcWallet").value;
-
-
-        if (password !== confirmPassword) {
-
-            alert("Passwords do not match!");
-
-            return;
-
-        }
-
-
-        const user = {
-
-            fullName,
-
-            email,
-
-            password,
-
-            wallet
-
-        };
-
-
-        localStorage.setItem("user", JSON.stringify(user));
-
-
-        alert("Registration successful!");
-
-        window.location.href = "login.html";
-
-    });
-
+        alert("Registration Successful! Please login.");
+        window.location.href = "login.html";
+    });
 }
 
-/* =========================================
-   LOGIN
-========================================= */
+// LOGIN
 const loginForm = document.getElementById("loginForm");
 
 if (loginForm) {
     loginForm.addEventListener("submit", function (e) {
         e.preventDefault();
 
-        const email = document.getElementById("loginEmail").value.trim();
-        const password = document.getElementById("loginPassword").value.trim();
+        const emailInput = document.getElementById("email").value;
+        const passwordInput = document.getElementById("password").value;
 
-        const savedUser = JSON.parse(localStorage.getItem("user"));
+        const savedUser = JSON.parse(localStorage.getItem("bitcoinUser"));
 
         if (!savedUser) {
-            alert("No user found. Please register first.");
+            alert("No account found. Please register.");
             return;
         }
 
-        if (savedUser.email === email && savedUser.password === password) {
-            localStorage.setItem("loggedIn", "true");
-            alert("Login successful!");
+        if (
+            emailInput === savedUser.email &&
+            passwordInput === savedUser.password
+        ) {
+            alert("Login Successful!");
             window.location.href = "dashboard.html";
         } else {
-            alert("Invalid email or password.");
+            alert("Invalid Email or Password");
         }
     });
 }
