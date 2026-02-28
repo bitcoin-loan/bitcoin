@@ -52,87 +52,78 @@ function protectPages() {
     if (currentPage.includes("login") && session) {
         window.location.href = "dashboard.html";
     }
-}
-// ===============================
-// PRODUCTION STABLE AUTH SYSTEM
-// ===============================
 
-// REGISTER
-const registerForm = document.getElementById("registerForm");
+/* =========================================
+   REGISTER
+========================================= */
 
-if (registerForm) {
-    registerForm.addEventListener("submit", function (e) {
+function initRegister() {
+    const form = document.getElementById("registerForm");
+    if (!form) return;
+
+    form.addEventListener("submit", function (e) {
         e.preventDefault();
 
-        const email = document.getElementById("email").value;
-        const password = document.getElementById("password").value;
+        const fullName = document.getElementById("fullName")?.value;
+        const email = document.getElementById("email")?.value;
+        const password = document.getElementById("password")?.value;
+        const country = document.getElementById("country")?.value;
+        const btcWallet = document.getElementById("btcWallet")?.value;
 
         if (!email || !password) {
-            alert("Please fill all fields");
-            return;
+            return alert("Please fill required fields.");
         }
 
-        const user = {
-            email: email,
-            password: password
-        };
+        const users = getUsers();
 
-        localStorage.setItem("bitcoinUser", JSON.stringify(user));
+        if (users.find(u => u.email === email)) {
+            return alert("Email already registered.");
+        }
 
-        alert("Registration Successful! Please login.");
+        users.push({
+            fullName,
+            email,
+            password,
+            country,
+            btcWallet
+        });
+
+        saveUsers(users);
+
+        alert("Registration successful. Please login.");
         window.location.href = "login.html";
     });
 }
-
-// LOGIN
-const loginForm = document.getElementById("loginForm");
-
-if (loginForm) {
-    loginForm.addEventListener("submit", function (e) {
-        e.preventDefault();
-
-        const emailInput = document.getElementById("email").value;
-        const passwordInput = document.getElementById("password").value;
-
-        const savedUser = JSON.parse(localStorage.getItem("bitcoinUser"));
-
-        if (!savedUser) {
-            alert("No account found. Please register.");
-            return;
-        }
-
-        if (
-            emailInput === savedUser.email &&
-            passwordInput === savedUser.password
-        ) {
-            alert("Login Successful!");
-            window.location.href = "dashboard.html";
-        } else {
-            alert("Invalid Email or Password");
-        }
-    });
-}
 /* =========================================
-   DASHBOARD
+   LOGIN
 ========================================= */
 
-function initDashboard() {
-    const sessionEmail = localStorage.getItem("bitcoinSession");
-    if (!sessionEmail) return;
+function initLogin() {
+    const form = document.getElementById("loginForm");
+    if (!form) return;
 
-    const user = getUserByEmail(sessionEmail);
-    if (!user) return;
+    form.addEventListener("submit", function (e) {
+        e.preventDefault();
 
-    const welcomeEl = document.getElementById("welcomeUser");
-    if (welcomeEl) welcomeEl.innerText = "Welcome, " + user.fullName;
+        const email = document.getElementById("email")?.value;
+        const password = document.getElementById("password")?.value;
 
-    const walletEl = document.getElementById("userWallet");
-    if (walletEl) walletEl.innerText = user.btcWallet;
+        const user = getUserByEmail(email);
 
-    const platformWalletEl = document.getElementById("platformWallet");
-    if (platformWalletEl) platformWalletEl.innerText = COLLATERAL_WALLET;
+        if (!user) {
+            return alert("No account found.");
+        }
 
-    displayLoanHistory();
+        if (user.password !== password) {
+            return alert("Invalid password.");
+        }
+
+        // ✅ THIS IS WHAT YOU WERE MISSING
+        localStorage.setItem("bitcoinSession", user.email);
+
+        alert("Login successful!");
+        window.location.href = "dashboard.html";
+    });
 }
 
 /* =========================================
@@ -159,7 +150,7 @@ function initProfile() {
 
 // LOGOUT
 function logout() {
-    localStorage.removeItem("loggedIn");
+    localStorage.removeItem("bitcoinSession");
     window.location.href = "login.html";
 }
 
