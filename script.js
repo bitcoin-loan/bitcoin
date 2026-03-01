@@ -161,7 +161,6 @@ function setText(id, value) {
 /* =========================================
    DASHBOARD
 ========================================= */
-
 function initDashboard() {
     const email = localStorage.getItem("bitcoinSession");
     if (!email) return;
@@ -169,14 +168,37 @@ function initDashboard() {
     const user = getUserByEmail(email);
     if (!user) return;
 
-    document.getElementById("welcomeUser").innerText =
-        "Welcome, " + (user.fullName || user.email);
+    const welcomeEl = document.getElementById("welcomeUser");
+    if (welcomeEl)
+        welcomeEl.innerText = "Welcome, " + (user.fullName || user.email);
 
-    document.getElementById("platformWallet").innerText = PLATFORM_WALLET;
-    document.getElementById("userWallet").innerText = user.btcWallet || "Not set";
+    const platformEl = document.getElementById("platformWallet");
+    const userEl = document.getElementById("userWallet");
 
-    new QRCode(document.getElementById("platformWalletQR"), PLATFORM_WALLET);
-    new QRCode(document.getElementById("userWalletQR"), user.btcWallet || "");
+    if (platformEl) platformEl.innerText = PLATFORM_WALLET;
+    if (userEl) userEl.innerText = user.btcWallet || "Not set";
+
+    // CLEAR OLD QR FIRST
+    const platformQR = document.getElementById("platformWalletQR");
+    const userQR = document.getElementById("userWalletQR");
+
+    if (platformQR) {
+        platformQR.innerHTML = "";
+        new QRCode(platformQR, {
+            text: PLATFORM_WALLET,
+            width: 120,
+            height: 120
+        });
+    }
+
+    if (userQR && user.btcWallet) {
+        userQR.innerHTML = "";
+        new QRCode(userQR, {
+            text: user.btcWallet,
+            width: 120,
+            height: 120
+        });
+    }
 
     displayLoanHistory();
 }
@@ -190,12 +212,14 @@ async function fetchBTCPrice() {
     if (!priceEl) return;
 
     try {
-        const res = await fetch("https://api.coindesk.com/v1/bpi/currentprice/USD.json");
+        const res = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd");
         const data = await res.json();
-        btcPrice = data.bpi.USD.rate_float;
-        priceEl.innerText = `BTC Price: $${btcPrice.toLocaleString()}`;
-    } catch {
+        btcPrice = data.bitcoin.usd;
+
+        priceEl.innerText = "BTC Price: $" + btcPrice.toLocaleString();
+    } catch (err) {
         priceEl.innerText = "BTC Price unavailable";
+        console.error(err);
     }
 }
 
@@ -290,10 +314,17 @@ function displayLoanHistory() {
 
 function copyUserWallet() {
     const wallet = document.getElementById("userWallet").innerText;
-    navigator.clipboard.writeText(wallet);
-    alert("Wallet copied!");
-}
 
-function approveLoan() {
-    alert("Loan request submitted. Deposit collateral to platform wallet.");
+    if (!wallet || wallet === "Not set") {
+        alert("No wallet to copy.");
+        return;
+    }
+
+    navigator.clipboard.writeText(wallet)
+        .then(() => {
+            alert("Wallet copied successfully!");
+        })
+        .catch(() => {
+            alert("Copy failed. Please copy manually.");
+        });
 }
