@@ -1,125 +1,85 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bitcoin Loan Dashboard</title>
-    <link rel="stylesheet" href="style.css">
-    <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bitcoin Loan Dashboard</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
 </head>
+
 <body>
 
-    <!-- Top Navigation -->
-    <header class="navbar">
-        <div class="logo">₿ Bitcoin Loan</div>
-        <div id="btcPrice">BTC Price: Loading...</div>
-        <button onclick="logout()">Logout</button> <!-- redirects to index.html -->
-    </header>
+<header class="navbar">
+    <div class="logo">₿ BitcoinLoan</div>
+    <div id="btcPrice" class="btc-price">BTC Price: Loading...</div>
+    <button class="logout-btn" onclick="logout()">Logout</button>
+</header>
 
-    <!-- Main Dashboard -->
-    <main class="dashboard-container">
+<main class="dashboard">
 
-        <!-- Welcome Section -->
-        <section class="card">
-            <h2 id="welcomeUser">Welcome</h2>
-            <p>Maximum Borrow Limit: <strong>10 BTC</strong></p>
-            <p id="maxBorrowUSD"></p>
-        </section>
+    <!-- HERO CARD -->
+    <section class="card hero-card">
+        <h1 id="welcomeUser">Welcome</h1>
+        <p class="subtext">Borrow up to <strong>10 BTC</strong> instantly</p>
+        <p id="maxBorrowUSD" class="highlight"></p>
+    </section>
 
-        <!-- Loan Calculator -->
-        <section class="card">
-            <h3>Loan Calculator</h3>
+    <!-- LOAN CALCULATOR -->
+    <section class="card">
+        <h2>Loan Calculator</h2>
+
+        <div class="input-group">
             <input type="number" id="loanAmount" placeholder="Enter BTC Amount" step="0.01">
-            <button onclick="calculateLoan()">Calculate Loan</button>
-            <div class="result-box">
-                <p id="usdValue"></p>
-                <p id="collateralValue"></p>
+            <button class="primary-btn" onclick="calculateLoan()">Calculate Loan</button>
+        </div>
+
+        <div class="result-box">
+            <p id="usdValue"></p>
+            <p id="collateralValue"></p>
+        </div>
+    </section>
+
+    <!-- WALLETS -->
+    <section class="card">
+        <h2>Wallets</h2>
+
+        <div class="wallet-box">
+            <div>
+                <p class="label">Platform Collateral Wallet</p>
+                <strong id="platformWallet"></strong>
             </div>
-        </section>
+            <div id="platformWalletQR"></div>
+        </div>
 
-        <!-- Wallets & Animation -->
-        <section class="card">
-            <h3>Wallets & Transaction</h3>
-            <div id="animationContainer" style="position: relative; height: 100px; margin-bottom: 20px;">
-                <div id="collateralBox" style="position: absolute; left:0; top:0; width:100px; height:50px; background:#f7931a; color:#fff; display:flex; align-items:center; justify-content:center; border-radius:5px;">Collateral</div>
-                <div id="loanBox" style="position: absolute; right:0; top:0; width:100px; height:50px; background:#10b981; color:#fff; display:flex; align-items:center; justify-content:center; border-radius:5px;">Loan</div>
+        <div class="wallet-box">
+            <div>
+                <p class="label">Your Wallet</p>
+                <strong id="userWallet"></strong>
             </div>
-
-            <p>Collateral Wallet (Platform): <strong id="platformWallet"></strong></p>
-            <div id="platformWalletQR" style="margin-bottom:10px;"></div>
-
-            <p>Your Wallet for Loan Funds: <strong id="userWallet"></strong>
-            <button onclick="copyUserWallet()">Copy Wallet</button></p>
+            <button class="secondary-btn" onclick="copyUserWallet()">Copy</button>
             <div id="userWalletQR"></div>
-        </section>
+        </div>
+    </section>
 
-        <!-- Collateral Policy & Loan Approval -->
-        <section class="card">
-            <h3>Collateral Policy</h3>
-            <p>All loans require a mandatory <strong>5% collateral deposit</strong> before loan disbursement.</p>
-            <button onclick="approveLoan()">Request Loan & Deposit Collateral</button>
-        </section>
+    <!-- ACTION -->
+    <section class="card action-card">
+        <h2>Request Loan</h2>
+        <p>Collateral required: <strong>5%</strong></p>
+        <button class="primary-btn big-btn" onclick="approveLoan()">
+            Request Loan & Deposit Collateral
+        </button>
+    </section>
 
-        <!-- Loan History -->
-        <section class="card">
-            <h3>Loan History</h3>
-            <div id="loanHistory">
-                <p>No loan history yet.</p>
-            </div>
-        </section>
-<section class="card">
-    <h3>How Bitcoin Loan Platform Works</h3>
+    <!-- LOAN HISTORY -->
+    <section class="card">
+        <h2>Loan History</h2>
+        <div id="loanHistory">
+            <p>No loan history yet.</p>
+        </div>
+    </section>
 
-    <div class="guide-step">
-        <h4>1️⃣ Register & Verify Email</h4>
-        <p>
-            Create an account by entering your full name, email, country, password, and your Bitcoin wallet address. 
-            Verify your email using the 6-digit code sent to you.
-        </p>
-    </div>
-
-    <div class="guide-step">
-        <h4>2️⃣ Login to Dashboard</h4>
-        <p>
-            Enter your registered email and password to access your personalized dashboard.
-        </p>
-    </div>
-
-    <div class="guide-step">
-        <h4>3️⃣ Check BTC Price & Maximum Loan</h4>
-        <p>
-            The dashboard shows the current Bitcoin price and your maximum borrow limit.
-        </p>
-    </div>
-
-    <div class="guide-step">
-        <h4>4️⃣ Calculate Loan</h4>
-        <p>
-            Enter the amount of BTC you want to borrow. The system calculates the USD value and required 5% collateral automatically.
-        </p>
-    </div>
-
-    <div class="guide-step">
-        <h4>5️⃣ Deposit Collateral & Request Loan</h4>
-        <p>
-            Click "Request Loan & Deposit Collateral". The collateral is sent to the platform wallet, and your loan is approved automatically.
-        </p>
-    </div>
-
-    <div class="guide-step">
-        <h4>6️⃣ Loan Disbursement</h4>
-        <p>
-            Once approved, your BTC loan is sent directly to your Bitcoin wallet. You can track all your loans in the "Loan History" section.
-        </p>
-    </div>
-
-    <div class="guide-step">
-        <h4>7️⃣ Profile & Loan History</h4>
-        <p>
-            View your profile, wallet, verified badge, and all previous loans in one place. Copy your wallet address easily with a click.
-        </p>
-    </div>
-</section>
-    </main>
+</main>
 
 <script src="script.js"></script>
 </body>
