@@ -253,8 +253,6 @@ function calculateLoan() {
 
     setText("usdValue", `Loan Value: $${usdValue.toLocaleString()}`);
     setText("collateralValue", `Collateral (5%): $${collateral.toLocaleString()}`);
-
-    saveLoan(loanBTC, usdValue, collateral);
 }
 
 function saveLoan(btcAmount, usdValue, collateral) {
