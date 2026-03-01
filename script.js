@@ -4,6 +4,7 @@
 
 const MAX_BORROW_BTC = 10;
 const COLLATERAL_RATE = 0.05;
+const PLATFORM_WALLET = "bc1qu9d6lv4rvkdkh34t8kk4ge0egc7r2m954tc2jq";
 
 let btcPrice = 0;
 
@@ -265,15 +266,7 @@ function displayLoanHistory() {
         container.innerHTML = "<p>No loan history yet.</p>";
         return;
     }
-function copyUserWallet() {
-    const wallet = document.getElementById("userWallet").innerText;
-    navigator.clipboard.writeText(wallet);
-    alert("Wallet copied!");
-}
-
-function approveLoan() {
-    alert("Loan request submitted. Deposit collateral to platform wallet.");
-}
+   
     container.innerHTML = "";
 
     userLoans.forEach(loan => {
@@ -293,4 +286,14 @@ function approveLoan() {
 
         container.appendChild(div);
     });
+}
+
+function copyUserWallet() {
+    const wallet = document.getElementById("userWallet").innerText;
+    navigator.clipboard.writeText(wallet);
+    alert("Wallet copied!");
+}
+
+function approveLoan() {
+    alert("Loan request submitted. Deposit collateral to platform wallet.");
 }
