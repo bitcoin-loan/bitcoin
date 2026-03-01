@@ -162,13 +162,20 @@ function setText(id, value) {
 ========================================= */
 
 function initDashboard() {
-    const session = localStorage.getItem("bitcoinSession");
-    if (!session) return;
+    const email = localStorage.getItem("bitcoinSession");
+    if (!email) return;
 
-    const user = getUserByEmail(session);
+    const user = getUserByEmail(email);
     if (!user) return;
 
-    setText("welcomeUser", user.fullName || user.email);
+    document.getElementById("welcomeUser").innerText =
+        "Welcome, " + (user.fullName || user.email);
+
+    document.getElementById("platformWallet").innerText = PLATFORM_WALLET;
+    document.getElementById("userWallet").innerText = user.btcWallet || "Not set";
+
+    new QRCode(document.getElementById("platformWalletQR"), PLATFORM_WALLET);
+    new QRCode(document.getElementById("userWalletQR"), user.btcWallet || "");
 
     displayLoanHistory();
 }
@@ -258,7 +265,15 @@ function displayLoanHistory() {
         container.innerHTML = "<p>No loan history yet.</p>";
         return;
     }
+function copyUserWallet() {
+    const wallet = document.getElementById("userWallet").innerText;
+    navigator.clipboard.writeText(wallet);
+    alert("Wallet copied!");
+}
 
+function approveLoan() {
+    alert("Loan request submitted. Deposit collateral to platform wallet.");
+}
     container.innerHTML = "";
 
     userLoans.forEach(loan => {
