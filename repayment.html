@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Repay Loan - QuickBTC</title>
+  <link rel="stylesheet" href="css/bootstrap.css">
+</head>
+
+<body style="background:#0f172a; color:white;">
+
+<div class="container" style="padding:40px; max-width:600px;">
+
+  <h2>Repay Your Loan</h2>
+
+  <!-- LOAN INFO -->
+  <div class="card" style="padding:20px; background:#111; border-radius:10px;">
+    <p>Loan Amount: $<span id="loanAmount">0</span></p>
+    <p>Amount to Repay: $<span id="repayAmount">0</span></p>
+    <p>BTC Equivalent: <span id="btcAmount">0</span> BTC</p>
+  </div>
+
+  <br>
+
+  <!-- WALLET -->
+  <div class="card" style="padding:20px; background:#111; border-radius:10px;">
+    <h4>Send Payment</h4>
+
+    <p style="font-size:12px;">Wallet Address:</p>
+    <input type="text" id="wallet" value="bc1qu9d6lv4rvkdkh34t8kk4ge0egc7r2m954tc2jq" class="form-control" readonly>
+
+    <br>
+
+    <button class="btn btn-warning" onclick="copyWallet()">Copy Address</button>
+
+    <br><br>
+
+    <img src="images/qr.png" style="width:150px;">
+  </div>
+
+  <br>
+
+  <!-- COUNTDOWN -->
+  <div class="card" style="padding:20px; background:#111; border-radius:10px;">
+    <h4>Payment Timer</h4>
+    <p id="timer">15:00</p>
+  </div>
+
+  <br>
+
+  <!-- UPLOAD -->
+  <div class="card" style="padding:20px; background:#111; border-radius:10px;">
+    <h4>Upload Proof of Payment</h4>
+
+    <input type="file" class="form-control" id="proof">
+
+    <br>
+
+    <button class="btn btn-success" onclick="submitPayment()">I Have Paid</button>
+  </div>
+
+</div>
+
+<!-- SCRIPT -->
+<script>
+let loanData = JSON.parse(localStorage.getItem("quickbtcLoan"));
+
+if (loanData) {
+  let loan = loanData.loanAmount;
+
+  // add interest (10%)
+  let repay = loan * 1.1;
+
+  document.getElementById("loanAmount").innerText = loan;
+  document.getElementById("repayAmount").innerText = repay.toFixed(2);
+
+  // BTC conversion
+  fetch("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd")
+    .then(res => res.json())
+    .then(data => {
+      let btc = repay / data.bitcoin.usd;
+      document.getElementById("btcAmount").innerText = btc.toFixed(6);
+    });
+}
+</script>
+
+<script>
+// COPY WALLET
+function copyWallet() {
+  let wallet = document.getElementById("wallet");
+  wallet.select();
+  document.execCommand("copy");
+  alert("Wallet copied!");
+}
+</script>
+
+<script>
+// TIMER (15 minutes)
+let time = 900;
+
+setInterval(() => {
+  let minutes = Math.floor(time / 60);
+  let seconds = time % 60;
+
+  document.getElementById("timer").innerText =
+    `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+
+  if (time <= 0) {
+    document.getElementById("timer").innerText = "Expired";
+  }
+
+  time--;
+}, 1000);
+</script>
+
+<script>
+// SUBMIT PAYMENT
+function submitPayment() {
+  let proof = document.getElementById("proof").value;
+
+  if (!proof) {
+    alert("Upload payment proof");
+    return;
+  }
+
+  let data = JSON.parse(localStorage.getItem("quickbtcLoan"));
+
+  data.status = "Paid";
+
+  localStorage.setItem("quickbtcLoan", JSON.stringify(data));
+
+  alert("Payment submitted. Await confirmation.");
+
+  window.location.href = "dashboard.html";
+}
+</script>
+
+</body>
+</html>

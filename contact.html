@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>QuickBTC Payment</title>
+  <link rel="stylesheet" href="css/bootstrap.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+ 
+<div class="container" style="padding:40px; max-width:600px;">
+
+  <h2>Request Alternative Payment Method</h2>
+
+  <p>If you are unable to use Bitcoin, submit this request and our support team will respond.</p>
+
+  <form action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
+
+    <label>Full Name</label>
+    <input type="text" name="name" class="form-control" required>
+
+    <br>
+
+    <label>Email Address</label>
+    <input type="email" name="email" class="form-control" required>
+
+    <br>
+
+    <label>Preferred Payment Method</label>
+    <select name="payment_method" class="form-control" required>
+      <option value="Bank Transfer">Bank Transfer</option>
+      <option value="USDT (TRC20)">USDT (TRC20)</option>
+      <option value="Ethereum">Ethereum</option>
+      <option value="Cash Pickup">Cash Pickup</option>
+      <option value="Paypal">Paypal</option>
+    </select>
+
+    <br>
+
+    <label>Reason for Request</label>
+    <textarea name="message" class="form-control" rows="4" placeholder="Explain why you need an alternative payment method..." required></textarea>
+
+    <br>
+
+    <!-- Optional: auto attach loan data from dashboard -->
+    <input type="hidden" name="loan_data" id="loanDataField">
+
+    <button type="submit" class="btn btn-primary">
+      Send Request
+    </button>
+
+  </form>
+
+</div>
+<p id="successMsg" style="display:none; color:green;">
+  Request sent successfully. Our support will contact you shortly.
+</p>
+<script>
+let loanData = localStorage.getItem("quickbtcLoan");
+
+if (loanData) {
+  document.getElementById("loanDataField").value = loanData;
+}
+</script>

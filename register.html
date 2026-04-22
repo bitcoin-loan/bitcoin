@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>QuickBTC Register</title>
+  <link rel="stylesheet" href="css/bootstrap.css">
+</head>
+
+<body style="background:#0f172a; color:white;">
+
+<div class="container" style="padding:50px;">
+
+  <h1>Create Account</h1>
+
+  <input id="name" placeholder="Full Name" class="form-control"><br>
+
+  <input id="email" placeholder="Email" class="form-control"><br>
+
+  <input id="password" type="password" placeholder="Password" class="form-control"><br>
+
+  <button class="btn btn-success" onclick="register()">Register</button>
+  <p style="margin-top:15px;">
+  Already have an account?
+</p>
+
+<a href="Login.html" class="btn btn-outline-light">
+   Login
+</a>
+
+</div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+
+<script>
+const supabaseUrl = "https://dntcbbolfwkaalphxotw.supabase.co";
+const supabaseKey = "sb_publishable_Bc25pHX_aamO4fOfLh_D9w__kwNvMoo";
+
+const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+</script>
+</body>
+</html>

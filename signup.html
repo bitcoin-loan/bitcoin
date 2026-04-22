@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>QuickBTC Loan Application</title>
+  <link rel="stylesheet" href="css/bootstrap.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+  
+<div class="container" style="padding:50px;">
+
+  <h1>Apply for a Loan</h1>
+
+  <p>Fill in your details to request a loan.</p>
+
+  <form onsubmit="generateLoan(event)" class="loan-form">
+
+  <h2>Personal Information</h2>
+
+  <label>Full Legal Name</label>
+  <input type="text" class="form-control" required>
+
+  <br>
+
+  <label>Date of Birth</label>
+  <input type="date" class="form-control" required>
+
+  <br>
+
+  <label>Country of Residence</label>
+  <input type="text" class="form-control" required>
+
+  <br>
+
+  <label>Email Address</label>
+  <input type="email" class="form-control" required>
+
+  <br>
+
+  <label>Phone Number (WhatsApp preferred)</label>
+  <input type="tel" class="form-control" required>
+
+  <hr>
+
+  <h2>Financial Profile</h2>
+
+  <label>Employment Status</label>
+  <select class="form-control" required>
+    <option>Employed</option>
+    <option>Self-employed</option>
+    <option>Unemployed</option>
+    <option>Student</option>
+  </select>
+
+  <br>
+
+  <label>Monthly Income ($)</label>
+  <input type="number" class="form-control" required>
+
+  <br>
+
+  <label>Existing Crypto Holdings (approx)</label>
+  <input type="text" class="form-control" placeholder="e.g. 0.5 BTC / 2 ETH">
+
+  <hr>
+
+  <h2>Loan Details</h2>
+
+  <label>Loan Amount ($)</label>
+  <input type="number" class="form-control" id="loanInput" required>
+
+  <br>
+
+  <label>Loan Purpose</label>
+  <select class="form-control" required>
+    <option>Business Expansion</option>
+    <option>Personal Needs</option>
+    <option>Trading Capital</option>
+    <option>Emergency Funds</option>
+    <option>Investment Opportunity</option>
+  </select>
+
+  <br>
+
+  <label>Loan Type</label>
+  <select class="form-control" required>
+    <option>Bitcoin (BTC) Collateral</option>
+    <option>Ethereum (ETH) Collateral</option>
+    <option>USDT Stable Collateral</option>
+  </select>
+
+  <hr>
+
+  <h2>Risk & Agreement</h2>
+
+  <label>
+    <input type="checkbox" required>
+    I confirm that all information provided is accurate.
+  </label>
+
+  <br><br>
+
+  <label>
+    <input type="checkbox" required>
+    I understand collateral liquidation rules may apply if repayment fails.
+  </label>
+
+  <br><br>
+
+  <label>
+    <input type="checkbox" required>
+    I agree to the loan terms and conditions.
+  </label>
+
+  <br><br>
+
+  <button type="submit" class="btn btn-primary">
+    Submit Loan Application
+  </button>
+
+</form>
+
+  <hr>
+
+  <div id="resultBox" style="display:none;">
+    <h3>Loan Summary</h3>
+
+    <p id="summary"></p>
+
+    <h4>Next Step: Deposit Collateral</h4>
+
+    <p>
+      Send your collateral to the secure wallet address shown after approval.
+    </p>
+    <button class="btn btn-primary" onclick="window.location.href='payment.html'">
+  Proceed
+</button>
+  </div>
+
+    <a href="dashboard.html">Back to Home</a>
+  </div>
+
+</div>
+  <script>
+let btcPriceUSD = 0;
+
+async function loadBTC() {
+  try {
+    const res = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd");
+    const data = await res.json();
+
+    btcPriceUSD = data.bitcoin.usd;
+  } catch (e) {
+    btcPriceUSD = 0;
+  }
+}
+
+loadBTC();
+</script>
+<script type="module">
+import { doc, setDoc } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
+
+window.generateLoan = function (event) {
+  event.preventDefault();
+
+  let loan = parseFloat(document.getElementById("loanInput").value);
+
+  if (!loan || loan < 100) {
+    alert("Enter valid loan");
+    return;
+  }
+
+  let collateral = loan * 0.1;
+  let btcEquivalent = btcPriceUSD 
+    ? (loan / btcPriceUSD).toFixed(6) 
+    : "Updating...";
+
+  let repaymentDays = loan <= 200 ? 30 : loan <= 500 ? 90 : 365;
+  let repaymentTime = Date.now() + (repaymentDays * 86400000);
+
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+      alert("Please login first");
+      window.location.href = "login.html";
+      return;
+    }
+
+    try {
+      await setDoc(doc(db, "loans", user.uid), {
+        loanAmount: loan,
+        collateral,
+        btcEquivalent,
+        status: "Pending",
+        repaymentDays,
+        repaymentTime,
+        userEmail: user.email,
+        userName: user.displayName || "User"
+      });
+
+      alert("Loan submitted successfully!");
+
+      document.getElementById("resultBox").style.display = "block";
+
+    } catch (error) {
+      alert(error.message);
+    }
+  });
+};
+</script>
+<script>
+let loanInput = document.getElementById("loanInput");
+<p>Collateral: $<span id="collateralLive">0</span></p>
+<p>BTC Equivalent: <span id="btcLive">0</span></p>
+  let loan = parseFloat(this.value) || 0;
+
+  let collateral = loan * 1.5;
+  let btc = btcPriceUSD ? (loan / btcPriceUSD).toFixed(6) : 0;
+
+  document.getElementById("collateralLive").innerText = collateral;
+  document.getElementById("btcLive").innerText = btc;
+});
+</script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
+import { getFirestore } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBI5dyLw6MfJ_8TqKpGed4AQUvUfE9G_rY",
+  authDomain: "quickbtcloan-c085a.firebaseapp.com",
+  projectId: "quickbtcloan-c085a",
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+window.auth = auth;
+window.db = db;
+</script>
+</body>
+</html>

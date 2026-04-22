@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>QuickBTC Dashboard</title>
+  <link rel="stylesheet" href="css/bootstrap.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+<!-- NAVIGATION -->
+<div style="display:flex; justify-content:space-between; align-items:center; padding:15px; background:#0f172a; color:white; border-radius:10px;">
+
+  <div>
+    <h3 style="margin:0;">QuickBTC</h3>
+  </div>
+
+  <div>
+    <a href="#" style="margin:0 10px; color:white; text-decoration:none;">Dashboard</a>
+    <a href="#" style="margin:0 10px; color:white; text-decoration:none;">History</a>
+    <a href="#" style="margin:0 10px; color:white; text-decoration:none;">Contact Care</a>
+    
+    <button onclick="logout()" style="margin:0 10px; background:red; color:white; border:none; padding:5px 10px; border-radius:5px;">
+  Logout
+</button>
+  </div>
+
+</div>
+
+<br>
+
+<!-- WELCOME SECTION -->
+<div class="card" style="padding:20px; background:#111; color:white; border-radius:10px;">
+
+  <h2>Welcome, <span id="userName">User</span> 👋</h2>
+
+  <p>Manage your loan, collateral and repayment easily.</p>
+
+  <button class="btn btn-primary" onclick="window.location.href='signup.html'">
+  Click here to apply loan
+</button>
+
+</div>
+
+<br>
+
+  <!-- LOAN SUMMARY -->
+  <div class="card" style="padding:20px; background:#111; color:white; border-radius:10px;">
+
+    <h2>Loan Summary</h2>
+
+    <p>Total Loan: $<span id="loanAmount">0</span></p>
+<p>Collateral Locked: $<span id="collateralAmount">0</span></p>
+    <p>Total Repayment: 
+  $<span id="repayAmount" style="color:#22c55e; font-weight:bold;">0</span>
+</p>
+<p>Interest (10%): $<span id="interestAmount">0</span></p>
+    
+    
+<p>Status: <span id="loanStatus" style="color:orange;">Pending</span></p>
+<p>Repayment Duration: <span id="durationText">--</span></p>
+<p>Countdown: <span id="countdown">--</span></p>
+  </div>
+
+  <br>
+
+  <!-- BTC PRICE -->
+  <div class="card" style="padding:20px; background:#111; color:white; border-radius:10px;">
+
+    <h2>Live Bitcoin Price</h2>
+    <h3>$<span id="btcPrice">Loading...</span></h3>
+
+  </div>
+
+  <br>
+
+  <!-- ACTIONS -->
+  <div class="card" style="padding:20px; background:#111; color:white; border-radius:10px;">
+
+    <h2>Actions</h2>
+    
+   <button class="btn btn-primary" onclick="repayLoan()">Repay Loan</button>
+<button class="btn btn-warning" onclick="addCollateral()">Add Collateral</button>
+<button class="btn btn-success" onclick="withdrawFunds()">Withdraw Funds</button>
+</div>
+  
+ <div id="withdrawForm" style="display:none; margin-top:20px; padding:20px; background:#111; border-radius:10px; color:white;">
+
+  <h4>Withdraw Funds</h4>
+
+  <label>Select Withdrawal Method</label>
+  <select id="withdrawMethod" class="form-control" onchange="showFields()">
+    <option value="">-- Choose Method --</option>
+    <option value="bank">Bank Transfer</option>
+    <option value="btc">Bitcoin</option>
+    <option value="paypal">PayPal</option>
+  </select>
+
+  <br>
+
+  <!-- DYNAMIC FIELDS -->
+  <div id="dynamicFields"></div>
+
+  <br>
+
+  <button class="btn btn-success" onclick="submitWithdraw()">
+    Submit Withdrawal
+  </button>
+</div>
+
+<script>
+function showFields() {
+  let method = document.getElementById("withdrawMethod").value;
+  let box = document.getElementById("dynamicFields");
+
+  box.innerHTML = "";
+
+  if (method === "bank") {
+    box.innerHTML = `
+      <label>Account Name</label>
+      <input type="text" id="accName" class="form-control"><br>
+
+      <label>Account Number</label>
+      <input type="text" id="accNumber" class="form-control"><br>
+
+      <label>Bank Name</label>
+      <input type="text" id="bankName" class="form-control"><br>
+    `;
+  }
+
+  if (method === "btc") {
+    box.innerHTML = `
+      <label>Bitcoin Wallet Address</label>
+      <input type="text" id="btcAddress" class="form-control"><br>
+    `;
+  }
+
+  if (method === "paypal") {
+    box.innerHTML = `
+      <label>PayPal Email</label>
+      <input type="email" id="paypalEmail" class="form-control"><br>
+    `;
+  }
+}
+</script>
+  
+<script>
+async function submitWithdraw() {
+  const { data: { user } } = await supabase.auth.getUser();
+
+  let method = document.getElementById("withdrawMethod").value;
+
+  if (!method) {
+    alert("Select withdrawal method");
+    return;
+  }
+
+  let withdrawal = {
+    user_id: user.id,
+    method: method,
+    status: "Processing",
+    created_at: new Date().toISOString()
+  };
+
+  const { error } = await supabase
+    .from("withdrawals")
+    .insert([withdrawal]);
+
+  if (error) {
+    alert(error.message);
+    return;
+  }
+
+  alert("Withdrawal submitted successfully");
+}
+
+  // BANK
+  if (method === "bank") {
+    withdrawalData.accountName = document.getElementById("accName").value;
+    withdrawalData.accountNumber = document.getElementById("accNumber").value;
+    withdrawalData.bankName = document.getElementById("bankName").value;
+  }
+
+  // BTC
+  if (method === "btc") {
+    withdrawalData.wallet = document.getElementById("btcAddress").value;
+  }
+
+  // PAYPAL
+  if (method === "paypal") {
+    withdrawalData.paypal = document.getElementById("paypalEmail").value;
+  }
+
+  // validation
+  for (let key in withdrawalData) {
+    if (withdrawalData[key] === "" || withdrawalData[key] === undefined) {
+      if (key !== "status" && key !== "time") {
+        alert("Please fill all required fields");
+        return;
+      }
+    }
+  }
+
+  localStorage.setItem("quickbtcWithdrawal", JSON.stringify(withdrawalData));
+
+  data.status = "Disbursed";
+  localStorage.setItem("quickbtcLoan", JSON.stringify(data));
+
+  alert("Withdrawal submitted successfully");
+
+  location.reload();
+}
+</script>
+<script>
+function addCollateral() {
+  let data = JSON.parse(localStorage.getItem("quickbtcLoan"));
+
+  if (!data) {
+    alert("No loan found");
+    return;
+  }
+
+  // store intent (so payment page knows what to do)
+  localStorage.setItem("pendingAction", "addCollateral");
+
+  // optional: store current collateral + loan data
+  localStorage.setItem("tempLoanData", JSON.stringify(data));
+
+  // redirect to payment page
+  window.location.href = "payment.html";
+}
+</script>
+ <script>
+function repayLoan() {
+  let data = JSON.parse(localStorage.getItem("quickbtcLoan"));
+
+  if (!data) {
+    alert("No loan found");
+    return;
+  }
+
+  if (data.status === "Paid") {
+    alert("Loan already repaid");
+    return;
+  }
+
+  // redirect to payment page
+  window.location.href = "repayment.html";
+}
+</script>
+ 
+<script>
+  function withdrawFunds() {
+  let data = JSON.parse(localStorage.getItem("quickbtcLoan"));
+
+  if (!data) {
+    alert("No loan available");
+    return;
+  }
+
+  // allow withdrawal ONLY if loan exists and not pending
+  if (data.status === "Pending") {
+    alert("Loan is still pending approval");
+    return;
+  }
+
+  if (data.status === "Paid") {
+    alert("Loan already settled");
+    return;
+  }
+
+  // show form always for Approved OR Disbursed
+  document.getElementById("withdrawForm").style.display = "block";
+}
+</script>
+<script>
+let loanData = JSON.parse(localStorage.getItem("quickbtcLoan"));
+
+if (loanData) {
+
+  // AUTO APPROVE (RUN ONCE)
+  if (loanData.status === "Pending") {
+    loanData.status = "Approved";
+    localStorage.setItem("quickbtcLoan", JSON.stringify(loanData));
+  }
+
+  // DISPLAY STATUS
+  let statusEl = document.getElementById("loanStatus");
+  statusEl.innerText = loanData.status;
+
+  if (loanData.status === "Paid") {
+    statusEl.style.color = "lightgreen";
+  } else if (loanData.status === "Approved") {
+    statusEl.style.color = "cyan";
+  } else if (loanData.status === "Disbursed") {
+    statusEl.style.color = "yellow";
+  } else {
+    statusEl.style.color = "orange";
+  }
+}
+</script>
+
+  <script>
+async function loadBTC() {
+  try {
+    const res = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd");
+    const data = await res.json();
+
+    document.getElementById("btcPrice").innerText =
+      data.bitcoin.usd.toLocaleString();
+
+  } catch (e) {
+    document.getElementById("btcPrice").innerText = "Error";
+  }
+}
+
+loadBTC();
+setInterval(loadBTC, 10000);
+</script>
+  
+  <script>async function loadLoan() {
+  const { data: { user } } = await supabase.auth.getUser();
+
+  const { data } = await supabase
+    .from("loans")
+    .select("*")
+    .eq("user_id", user.id)
+    .maybeSingle();
+
+  if (!data) return;
+
+  let loan = Number(data.loan_amount);
+  let interest = loan * 0.1;
+
+  document.getElementById("loanAmount").innerText = loan;
+  document.getElementById("collateralAmount").innerText = data.collateral;
+  document.getElementById("interestAmount").innerText = interest.toFixed(2);
+  document.getElementById("repayAmount").innerText = (loan + interest).toFixed(2);
+  document.getElementById("loanStatus").innerText = data.status;
+}
+
+loadLoan();
+</script>
+ 
+<script>
+let repaymentTime = parseInt(localStorage.getItem("repaymentTime"));
+
+function getDurationDays(loan) {
+  if (loan < 200) return 30;
+  if (loan < 500) return 90;
+  return 365;
+}
+
+function startTimer() {
+  let loanData = JSON.parse(localStorage.getItem("quickbtcLoan"));
+let loan = loanData ? loanData.loanAmount : 100;
+
+  let days = getDurationDays(loan);
+  let durationText = document.getElementById("durationText");
+
+  if (durationText) {
+    durationText.innerText = days + " Days";
+  }
+
+  if (!repaymentTime) {
+    let now = new Date().getTime();
+    let durationMs = days * 24 * 60 * 60 * 1000;
+    repaymentTime = now + durationMs;
+    localStorage.setItem("repaymentTime", repaymentTime);
+  }
+
+  updateCountdown();
+}
+
+function updateCountdown() {
+  let now = new Date().getTime();
+  let distance = repaymentTime - now;
+
+  if (distance <= 0) {
+    document.getElementById("countdown").innerText = "⚠️ Time Expired";
+    return;
+  }
+
+  let days = Math.floor(distance / (1000 * 60 * 60 * 24));
+  let hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+  let seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+  document.getElementById("countdown").innerText =
+    `${days}d ${hours}h ${minutes}m ${seconds}s`;
+}
+
+setInterval(updateCountdown, 1000);
+startTimer();
+</script>
+<script>
+async function loadUser() {
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if (!user) {
+    window.location.href = "login.html";
+    return;
+  }
+
+  document.getElementById("userName").innerText = user.email;
+}
+
+loadUser();
+</script>
+<script>
+function logout() {
+  // remove user session data
+  localStorage.removeItem("quickbtcUser");
+  localStorage.removeItem("quickbtcLoan");
+  localStorage.removeItem("repaymentTime");
+
+  alert("You have been logged out");
+
+  // redirect to login or home page
+  window.location.href = "index.html";
+}
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+
+<script>
+const supabaseUrl = "https://dntcbbolfwkaalphxotw.supabase.co";
+const supabaseKey = "sb_publishable_Bc25pHX_aamO4fOfLh_D9w__kwNvMoo";
+
+</script>
+</body>
+</html>

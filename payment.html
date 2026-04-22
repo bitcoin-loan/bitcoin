@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>QuickBTC Payment</title>
+  <link rel="stylesheet" href="css/bootstrap.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+<div class="container" style="padding:50px; text-align:center;">
+  
+  <div style="margin-top:20px; padding:15px; background:#1f2937; color:white; border-radius:10px; border-left:4px solid #f59e0b;">
+
+  <h4 style="margin:0; color:#fbbf24;">⚠️ Alternative Payment Option</h4>
+
+  <p style="margin-top:10px;">
+    If you are unable to transfer with Bitcoin, kindly request a preferred deposit option from our Customer Care team before proceeding with your payment.
+  </p>
+
+  <button class="btn btn-warning" onclick="window.location.href='contact.html'">
+    Contact Customer Care
+  </button>
+
+</div>
+
+  <h1>Collateral Deposit</h1>
+  
+  <p style="color:red; font-weight:bold;">
+  ⏳ Full Repayment Period: 365 Days after loan approval
+</p>
+
+  <p>Please send your collateral to the bitcoin wallet address below to complete your loan process.</p>
+
+  <hr>
+
+  <h3>Send Only Bitcoin Here </h3>
+
+  <div style="background:#111; color:#fff; padding:15px; border-radius:10px;">
+    <span id="walletAddress">
+bc1qu9d6lv4rvkdkh34t8kk4ge0egc7r2m954tc2jq</span>
+  </div>
+
+  <br>
+
+  <button onclick="copyAddress()" class="btn btn-primary">
+    Copy Address
+  </button>
+
+  <br><br>
+
+  <h3>Scan QR Code</h3>
+
+  <img src="images/qr.png" width="200">
+
+  <hr>
+
+  <h3>Payment Status</h3>
+
+  <p id="status">Waiting for payment...</p>
+
+  <p id="timer">Time Remaining: 15:00</p>
+
+  <hr>
+
+  <h3>Upload Proof of Payment</h3>
+
+  <input type="file">
+
+  <br><br>
+
+  <button class="btn btn-success">Submit Proof</button>
+
+</div>
+
+ <script>
+let data = JSON.parse(localStorage.getItem("quickbtcLoan"));
+
+if (data) {
+  document.getElementById("status").innerText =
+    "Loan: $" + data.loanAmount + " | Collateral Required: $" + data.collateral;
+} else {
+  document.getElementById("status").innerText =
+    "No loan found. Please apply first.";
+}
+</script>
+  
+  <script>
+function copyAddress() {
+  let text = document.getElementById("walletAddress").innerText;
+
+  navigator.clipboard.writeText(text);
+
+  alert("Wallet address copied!");
+}
+
+// Countdown timer (15 minutes)
+let time = 900;
+
+let timer = setInterval(() => {
+  let minutes = Math.floor(time / 60);
+  let seconds = time % 60;
+
+  document.getElementById("timer").innerText =
+    "Time Remaining: " + minutes + ":" + (seconds < 10 ? "0" : "") + seconds;
+
+  time--;
+
+  if (time < 0) {
+    clearInterval(timer);
+    document.getElementById("status").innerText =
+      "⚠️ Time expired. Please restart process.";
+  }
+
+}, 1000);
+</script>
